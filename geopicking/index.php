@@ -1,5 +1,8 @@
 <?php
-$url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
+$url = $_GET["url"];
+if(!$url)
+ $url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
+
 $curl = curl_init($url);
 
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
