@@ -1,7 +1,10 @@
 <?php
-$url = $_GET["url"];
-if(!$url)
- $url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
+if(isset($_GET['url']){
+   $url = $_GET["url"];
+}else{
+    $url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
+}
+
 
 $curl = curl_init($url);
 
