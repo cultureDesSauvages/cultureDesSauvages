@@ -1,7 +1,7 @@
 <?php
 
-if (isset($_GET['key1'])) {
-  echo 'key1 is set';
+if (isset($_GET['test'])) {
+  echo 'test is set';
 }
 $url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
  
