@@ -8,6 +8,7 @@ else
   $url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
  
 }
+echo '$url : '.$url;
 
  
 $curl = curl_init($url);
