@@ -1,5 +1,5 @@
 <?php
-$url = 'https://trefle.io/api/v1/genus?token=WY4938eNStvfSd3tTTUxQNQvoOVBhuaR4RPGbm61R8A';
+$url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
 $curl = curl_init($url);
 
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
