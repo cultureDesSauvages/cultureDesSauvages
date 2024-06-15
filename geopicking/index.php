@@ -2,7 +2,6 @@
 $url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
 if (isset($_GET['apiUrl'])) {
    $url = str_replace(' ', '%20', $_GET['apiUrl']);
-   echo $url;
 }
  
 $curl = curl_init($url);
