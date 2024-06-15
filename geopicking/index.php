@@ -2,14 +2,15 @@
 $url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
 if (isset($_GET['apiUrl'])) {
    $url = str_replace(' ', '%20', $_GET['apiUrl']);
+   
 }
  
 $curl = curl_init($url);
 
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-//curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "GET");
-//curl_setopt( $curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-//curl_setopt($curl, CURLOPT_POSTFIELDS, $encodedData);
+
 $result = curl_exec($curl);
 
 curl_close($curl);
