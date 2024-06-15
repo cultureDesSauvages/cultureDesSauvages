@@ -1,15 +1,9 @@
 <?php
-if( isset( $_GET[ 'apiUrl' ] ) )
-{
-  $url = $_GET[ 'apiUrl' ])
-}
-else
-{
-  $url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
- 
-}
-echo '$url : '.$url;
 
+if (isset($_GET['key1'])) {
+  echo 'key1 is set';
+}
+$url = 'https://api.gbif.org/v1/species/match?name=allium%20ursinum';
  
 $curl = curl_init($url);
 
