@@ -1,4 +1,5 @@
-if (!window.GeoPickr) GeoPickr = {};
+if (!window.GeoPickr) 
+  var GeoPickr = window.GeoPickr = {};
 GeoPickr.API = {};
 GeoPickr.API.cachedPlantList = null;
 GeoPickr.API.cachedTreePlantList = null;
