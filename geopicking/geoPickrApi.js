@@ -64,10 +64,10 @@ GeoPickr.API.getPlantFromTrefle = async (scientificName) => {
   return await response.json();
 };
 
-GeoPickr.API.getMediaFromTreflePlant = async (plant) => {
+GeoPickr.API.getMediaFromTreflePlant = (plant) => {
   return plant.data.main_species.images;
 };
-GeoPickr.API.getSourcesFromTreflePlant = async (plant) => {
+GeoPickr.API.getSourcesFromTreflePlant = (plant) => {
   return plant.data.main_species.sources;
 };
 
