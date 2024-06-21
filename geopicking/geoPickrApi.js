@@ -61,8 +61,7 @@ GeoPickr.API.getPlantFromTrefle = async (scientificName) => {
       "/?" +
       GeoPickr.API.trefleToken 
   );
-  var json = await response.json();
-  return json;
+  return await response.json();
 };
 
 GeoPickr.API.getMediaFromTreflePlant = async (plant) => {
@@ -77,10 +76,7 @@ GeoPickr.API.getPlantExtraDatas = async (scientificName) => {
   var response = await fetch(
     GeoPickr.API.extraDatasUrl + "/" + scientificName.split(" ").join("-")
   );
-  if (response.ok) {
-    return await response.json();
-  }
-  return {};
+  return response.ok ? await response.json() : {};
 };
 
 GeoPickr.API.search = async (query) => {
