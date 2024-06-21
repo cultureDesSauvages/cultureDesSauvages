@@ -59,21 +59,19 @@ GeoPickr.API.getPlantFromTrefle = async (scientificName) => {
       "/" +
       species +
       "/?" +
-      GeoPickr.API.trefleToken
+      GeoPickr.API.trefleToken 
   );
   var json = await response.json();
   return json;
 };
 
-GeoPickr.API.getPlantFromTrefleRefined = async (scientificName) => {
-  var json = await GeoPickr.API.getPlantFromTrefle(scientificName);
-  var output = {};
-  output.images = json.data.images;
-  output.commonNames = json.data.common_names.fr;
-  output.sources = json.data.sources;
-
-  return output;
+GeoPickr.API.getMediaFromTreflePlant = async (plant) => {
+  return plant.data.main_species.images;
 };
+GeoPickr.API.getSourcesFromTreflePlant = async (plant) => {
+  return plant.data.main_species.sources;
+};
+
 
 GeoPickr.API.getPlantExtraDatas = async (scientificName) => {
   var response = await fetch(
