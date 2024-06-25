@@ -65,7 +65,7 @@ GeoPickr.API.getPlantList = async () => {
         plant.species = GeoPickr.utils.cleanName(plant.commonName);
         var genusAndSpecies = plant.scientificName.split(' ');
         genusAndSpecies.shift();
-      console.log( 'genusAndSpecies after shift', genusAndSpecies );
+      console.log( 'genusAndSpecies after shift', genusAndSpecies ); 
         plant.species = genusAndSpecies.join(' ').trim();
       
         delete plant.inpiNames;
