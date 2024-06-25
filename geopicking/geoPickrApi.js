@@ -7,7 +7,8 @@
   names: ["Jujubier de Maurice", "Jujubier", "Cicourlier", "Dattier de Chine", "Guindanlier", "jujubier commun"],
   scientificName: "Ziziphus jujuba",
   searchNames: "jujubier de maurice, jujubier, cicourlier, dattier de chine, guindanlier, jujubier commun",
-  trefleId: 113259
+  trefleId: 113259,
+  species : "jujuba"
 }
 
 */
@@ -64,6 +65,7 @@ GeoPickr.API.getPlantList = async () => {
         plant.species = GeoPickr.utils.cleanName(plant.commonName);
         var genusAndSpecies = plant.scientificName.split(' ');
         genusAndSpecies.shift();
+      console.log( 'genusAndSpecies after shift', genusAndSpecies );
         plant.species = genusAndSpecies.join(' ').trim();
       
         delete plant.inpiNames;
