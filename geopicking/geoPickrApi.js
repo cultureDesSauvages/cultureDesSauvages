@@ -54,10 +54,11 @@ GeoPickr.API.getPlantList = async () => {
   plantList = plantList.map( plant =>{
     var names = [plant.commonName, ...plant.inpiNames, ...plant.trefleNames ];
     plant.names = GeoPickr.utils.getUniqueNames( names );
-    plant.searchNames = plant.names.join(', ');
+    plant.searchNames = plant.names.join(', ').toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
     return plant;
   })
   GeoPickr.API.cachedPlantList = plantList;
+  console.log( 'getPlantList raw', plantList );
   return plantList;
 };
 
@@ -126,14 +127,24 @@ GeoPickr.API.search = async (query) => {
 
   // filterByFamily
   if( GeoPickr.API.filters.family )
-    plantList = plantList.filter( plant => GeoPickr.API.filters.family.toLowerCase() === plant.family.toLowerCase() );
+    results = plantList.filter( plant => GeoPickr.API.filters.family.toLowerCase() === plant.family.toLowerCase() );
 
+  console.log( 'results after family filter', results );
+  
     // filterByFamily
   if( GeoPickr.API.filters.genus )
-    plantList = plantList.filter( plant => GeoPickr.API.filters.genus.toLowerCase() === plant.genus.toLowerCase() );
+    results = plantList.filter( plant => GeoPickr.API.filters.genus.toLowerCase() === plant.genus.toLowerCase() );
 
-  
-  plantList.forEach((plant) => {
+  console.log( 'results after genus filter', results );
+  if( !results.length ){
+    results = plantList;
+    console.log( 'no filters', results );
+  }
+  else{
+    console.log( 'filters', results );
+  }
+  results.forEach((plant) => {
+    /*
     var allNames =
       plant.scientificName +
       "," +
@@ -141,6 +152,8 @@ GeoPickr.API.search = async (query) => {
       plant.inpiNames.join(", ");
 
     allNames = allNames.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    */
+    /*allNames = plant.searchNames;
     query = query.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     var commonName = plant.commonName
       .normalize("NFD")
@@ -154,12 +167,14 @@ GeoPickr.API.search = async (query) => {
         isInCommonName: commonNameMatch.length
       };
       results.push(plant);
-    }
+    }*/
   });
+  /*
   results.sort(
     (a, b) =>
       b.query.isInCommonName - a.query.isInCommonName ||
       b.query.matches - a.query.matches
   );
+  */
   return results;
 };
