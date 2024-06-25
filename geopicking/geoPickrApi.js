@@ -1,6 +1,34 @@
 if (!window.GeoPickr) 
   var GeoPickr = window.GeoPickr = {};
 GeoPickr.API = {};
+GeoPickr.utils = {};
+
+//clean l'
+GeoPickr.utils.cleanNames = (names) => {
+  return names.map((name) => {
+    // clean apostrophes
+    name = name.replace(/’/gi, "'")
+    .replace(/l ' |l '|l' |L ' |L '|L' /gi, "l'")
+    .replace(/d ' |d '|d' |D ' |D '|D' /gi, "d'");
+
+    // removing l' from debut
+    if (name.toLowerCase().startsWith("l'")) {
+      name = name.substr("2");
+    }
+    return name.trim();
+  });
+};
+
+GeoPickr.utils.getUniqueNames = (names) => {
+  const cleanedNames = GeoPickr.utils.cleanNames(names);
+  const groups = Object.groupBy( cleanedNames, name => 
+    name.toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")   
+  )
+  return Object.keys(groups).map( group => groups[group][0] );
+};
+
 GeoPickr.API.cachedPlantList = null;
 GeoPickr.API.cachedTreePlantList = null;
 GeoPickr.API.extraDatasUrl = "https://api.npoint.io/ac30d377e95cdfc261a5";
@@ -80,6 +108,7 @@ GeoPickr.API.getPlantExtraDatas = async (scientificName) => {
 };
 
 GeoPickr.API.search = async (query) => {
+  console.log( query )
   const plantList = await GeoPickr.API.getPlantList();
   const results = [];
   plantList.forEach((plant) => {
