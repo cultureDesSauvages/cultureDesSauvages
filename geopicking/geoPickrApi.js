@@ -61,6 +61,11 @@ GeoPickr.API.getPlantList = async () => {
         plant.names = GeoPickr.utils.getUniqueNames(names);
         plant.searchNames = plant.names.join(', ').toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
         plant.commonName = GeoPickr.utils.cleanName(plant.commonName);
+        plant.species = GeoPickr.utils.cleanName(plant.commonName);
+        var genusAndSpecies = plant.scientificName.split(' ');
+        genusAndSpecies.shift();
+        plant.species = genusAndSpecies.join(' ').trim();
+      
         delete plant.inpiNames;
         delete plant.trefleNames;
         return plant;
