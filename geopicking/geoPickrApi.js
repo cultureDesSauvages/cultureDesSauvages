@@ -29,6 +29,12 @@ GeoPickr.utils.getUniqueNames = (names) => {
   return Object.keys(groups).map( group => groups[group][0] );
 };
 
+GeoPickr.API.filters = {
+  query : '',
+  family : '',
+  genus : ''
+};
+
 GeoPickr.API.cachedPlantList = null;
 GeoPickr.API.cachedTreePlantList = null;
 GeoPickr.API.extraDatasUrl = "https://api.npoint.io/ac30d377e95cdfc261a5";
