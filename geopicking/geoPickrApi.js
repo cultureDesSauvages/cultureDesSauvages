@@ -24,6 +24,10 @@ GeoPickr.utils.cleanName = (name) => {
     if (name.toLowerCase().startsWith("l'")) {
         name = name.substr("2");
     }
+    if (name.toLowerCase().startsWith('\"')) {
+        name = name.substr("2");
+    }
+  
     return name.trim();
 };
 GeoPickr.utils.getUniqueNames = (names) => {
