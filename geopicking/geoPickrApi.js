@@ -45,6 +45,12 @@ GeoPickr.API.getPlantList = async () => {
   if (GeoPickr.API.cachedPlantList) return GeoPickr.API.cachedPlantList;
   var response = await fetch(GeoPickr.API.plantListDataUrl);
   var plantList = await response.json();
+  plantList = plantList.map( plant =>{
+    var names = [plant.commonName, ...plant.inpiNames, ...plant.trefleNames ];
+    plant.names = GeoPickr.utils.getUniqueNames( names );
+    plant.searchNames = plant.names.join(', ');
+    return plant;
+  })
   GeoPickr.API.cachedPlantList = plantList;
   return plantList;
 };
