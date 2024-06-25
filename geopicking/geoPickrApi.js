@@ -105,8 +105,8 @@ GeoPickr.API.getPlantExtraDatas = async (scientificName) => {
 };
 GeoPickr.API.search = async (query) => {
     GeoPickr.API.filters.query = query;
-    query = GeoPickr.utils.normalizeString(query);
-    var regExp = new RegExp(query, 'gi')
+    var normalizeQuery = GeoPickr.utils.normalizeString(query);
+    var regExp = new RegExp(normalizeQuery, 'gi')
     var plantList = await GeoPickr.API.getPlantList();
     var results = [];
     // filterByFamily
@@ -129,7 +129,7 @@ GeoPickr.API.search = async (query) => {
     });
     results = results.sort(
         (a, b) => {
-            var indexOf = GeoPickr.utils.normalizeString(a.commonName).indexOf(query);
+            var indexOf = GeoPickr.utils.normalizeString(a.commonName).indexOf(normalizeQuery);
             if (indexOf === -1) {
                 return 30;
             }
