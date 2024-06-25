@@ -140,3 +140,70 @@ GeoPickr.API.search = async (query) => {
         });
     return results;
 };
+    GeoPickr.collection = {};
+    GeoPickr.collection.ids = [];
+    GeoPickr.collection.add = (id) => {
+        var filter = GeoPickr.collection.ids.filter(plant => {
+            return plant.id === id;
+        });
+        if (filter.length === 0) {
+            GeoPickr.collection.ids.push({
+                id: id
+            });
+        }
+        return true;
+    };
+    GeoPickr.collection.remove = (id) => {
+        var index = null;
+        var filter = GeoPickr.collection.ids.filter((plant, i) => {
+            if (plant.id === id) {
+                index = i;
+            }
+            return plant.id === id;
+        });
+        if (filter.length !== 0 && index !== null) {
+            GeoPickr.collection.ids.splice(index, 1);
+            return true;
+        }
+        return false;
+    };
+    GeoPickr.collection.getAll = () => {
+        return GeoPickr.collection.ids;
+    };
+    GeoPickr.collection.getById = (id) => {
+        var plant = GeoPickr.collection.ids.filter(plant => plant.id === id);
+        if (plant.length) {
+            return plant[0];
+        }
+        return [];
+    };
+    GeoPickr.collection.addPosition = (id, position) => {
+        var newPlant = GeoPickr.collection.getById(id);
+        if (!newPlant.length) {
+            GeoPickr.collection.add(id);
+        }
+        GeoPickr.collection.ids.forEach((plant, index, ids) => {
+            if (plant.id === id) {
+                if (ids[index].positions) {
+                    ids[index].positions.push(position)
+                } else {
+                    ids[index].positions = [position];
+                }
+            }
+        })
+        return true;
+    }
+    GeoPickr.collection.removePosition = (id, positionToDelete) => {
+        var index = null;
+        var isDeleted = false;
+        var plant = GeoPickr.collection.getById(id);
+        if (plant.positions) {
+            plant.positions.forEach((position, i, positions) => {
+                if (JSON.stringify(position) === JSON.stringify(positionToDelete)) {
+                    positions.splice(i, 1);
+                    isDeleted = true;
+                };
+            });
+            return isDeleted;
+        }
+    }
