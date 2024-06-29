@@ -61,11 +61,11 @@ GeoPickr.API.getPlantList = async () => {
         var names = [plant.commonName, ...plant.inpiNames, ...plant.trefleNames];
         plant.names = GeoPickr.utils.getUniqueNames(names);
         plant.searchNames = plant.names.join(', ').toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+        plant.names.shift();
         plant.commonName = GeoPickr.utils.cleanName(plant.commonName);
         plant.species = GeoPickr.utils.cleanName(plant.commonName);
         var genusAndSpecies = plant.scientificName.split(' ');
         genusAndSpecies.shift();
-      console.log( 'genusAndSpecies after shift', genusAndSpecies ); 
         plant.species = genusAndSpecies.join(' ').trim();
       
         delete plant.inpiNames;
@@ -86,13 +86,11 @@ GeoPickr.API.getTreePlantList = async () => {
 GeoPickr.API.getPlantFromInpn = async (scientificName) => {
     var response = await fetch(GeoPickr.API.plantSearchInpnUrl + scientificName.split(" ").join("%20"));
     var result = await response.json();
-    // allium%20ursinum
     return result._embedded ? result._embedded.taxa[0] : {};
 };
 GeoPickr.API.getWebPageFromInpn = async (scientificName) => {
     var response = await fetch(GeoPickr.API.plantSearchInpnUrl + scientificName.split(" ").join("%20"));
     var result = await response.json();
-    // allium%20ursinum
     return result._embedded ? result._embedded.taxa[0]._links.inpnWebpage.href : {};
 };
 GeoPickr.API.getPlantFromTrefle = async (scientificName) => {
@@ -118,7 +116,7 @@ GeoPickr.API.search = async (query) => {
     var results = [];
     // filterByFamily
     if (GeoPickr.API.filters.family) results = plantList.filter(plant => GeoPickr.API.filters.family.toLowerCase() === plant.family.toLowerCase());
-    // filterByFamily
+    // filterByGenus
     if (GeoPickr.API.filters.genus) results = plantList.filter(plant => GeoPickr.API.filters.genus.toLowerCase() === plant.genus.toLowerCase());
     if (!results.length) results = plantList;
     results = results.filter(plant => {
@@ -179,10 +177,7 @@ GeoPickr.API.search = async (query) => {
     };
     GeoPickr.collection.getById = (id) => {
         var plant = GeoPickr.collection.ids.filter(plant => plant.id === id);
-        if (plant.length) {
-            return plant[0];
-        }
-        return [];
+        return plant.length ? plant[0] || [];
     };
     GeoPickr.collection.addPosition = (id, position) => {
         var newPlant = GeoPickr.collection.getById(id);
