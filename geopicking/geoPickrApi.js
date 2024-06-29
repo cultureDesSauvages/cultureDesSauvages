@@ -177,7 +177,7 @@ GeoPickr.API.search = async (query) => {
     };
     GeoPickr.collection.getById = (id) => {
         var plant = GeoPickr.collection.ids.filter(plant => plant.id === id);
-        return plant.length ? plant[0] || [];
+        return plant.length ? plant[0] : [];
     };
     GeoPickr.collection.addPosition = (id, position) => {
         var newPlant = GeoPickr.collection.getById(id);
