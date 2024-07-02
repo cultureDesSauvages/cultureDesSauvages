@@ -145,6 +145,9 @@ GeoPickr.API.search = async (query) => {
         });
     return results;
 };
+
+
+
     GeoPickr.collection = {};
     GeoPickr.collection.ids = [];
     GeoPickr.collection.add = (id) => {
