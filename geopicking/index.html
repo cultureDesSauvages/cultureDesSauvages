@@ -1,1 +1,178 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+<link href="ht tps://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" >
+  <script src="https://cdn.statically.io/gh/cultureDesSauvages/cultureDesSauvages/main/geopicking/geoPickrApi.js"></script>
+  
+    <script src="https://cdn.statically.io/gh/cultureDesSauvages/cultureDesSauvages/main/geopicking/geoPickrEvents.js"></script>
+  
+     <script src="https://cdn.statically.io/gh/cultureDesSauvages/cultureDesSauvages/main/geopicking/geoPickrApiDom.js"></script> 
+  <title>JS Bin</title>
+</head>
+<body>
+  <div id="filtersWrapper">
+  <input type="text" placeholder="Trouver une plante" id="plantFilter"/>
+    (<span id="results">0</span> résultats)
+    <div class="filters">
+      <a id="familyFilter" href=""></a>
+      <a id="genusFilter" href=""></a>
+    </div>
+  </div>
+<div id="plantList"></div>
+  <script>
+      
+   GeoPickr.API.initFilters();
+
+   GeoPickr.tpl = {};
+   //////TPL
+   GeoPickr.tpl.miniPlant = plant => {
+       var species = plant.species;
+       var commonName = plant.commonName;
+     var collectionIds = GeoPickr.collection.ids.map(id=> parseInt(id.id));
+          
+       var img = (plant.imgUrl) ? `<div class="imgWrapper"><img src="${plant.imgUrl.replace('/o/', '/m/')}" width="auto" loading="lazy"/></div>` : '';
+       var tpl = `<article class="miniPlantWrapper">
+
+<h2>${plant.commonName}</h2>
+<a class="addToCollection  ${collectionIds.includes(plant.trefleId)?'favorite':''}" data-id="${plant.trefleId}" >♡</a>
+<a class="addToGeoCollection" data-id="${plant.trefleId}">
+  <img src="https://static.thenounproject.com/png/595892-200.png"/>
+</a>
+
+<div class="plantClass d-flex flex-row bd-highlight mb-3">
+<a data-family="${plant.family}" href="/${plant.family}/?${GeoPickr.API.filters.query}" class="p-2 bd-highlight familyFilter ${GeoPickr.API.filters.family === plant.family ? 'filtered' : '' }">${plant.family}</a>
+<a data-genus="${plant.genus}" data-family="${plant.family}" href="/${plant.genus}/?${GeoPickr.API.filters.query}" class="p-2 bd-highlight genusFilter ${GeoPickr.API.filters.genus === plant.genus ? 'filtered' : '' }">${plant.genus}</a>
+<span class="p-2 bd-highlight">${plant.species}</span>
+</div>
+<p>
+${plant.names.join(', ')}
+</p>
+${img}
+
+<div class="moreInfos">
+<a class="moreInfoLink" data-scientificName="${plant.scientificName}" href="/${plant.scientificName}">•••</a>
+
+</div>
+</article>
+`;
+       return tpl;
+   };
+    
+    GeoPickr.tpl.plantImages = (images)=>{
+      
+      if( Object.keys(images).length !== 0 ){
+        console.log( 'images', images )
+      }else{
+        console.log( ' no images', images )
+        return '';
+      }
+      
+      var tpl = `<div class="thumbsWrapper">
+<p>
+  <span class="plantPart">&#127800;</span>
+    ${ images.flower.map( flower => `<span><img src="${flower.image_url.replace('/o/', '/s/')}" /></span>` ).join('') }
+</p>
+<p>
+  <span class="plantPart">&#127808;</span>
+  ${ images.leaf.map( leaf => `<span><img src="${leaf.image_url.replace('/o/', '/s/')}" /></span>` ).join('') }
+</p>
+<p>
+<span class="plantPart">&#127822;</span>
+    ${ images.fruit.map( fruit => `<span><img src="${fruit.image_url.replace('/o/', '/s/')}" /></span>` ).join('') }
+</p>
+<p>
+ <span class="plantPart">&#127807;</span>
+    ${ images.bark.map( bark => `<span><img src="${bark.image_url.replace('/o/', '/s/')}" /></span>` ).join('') }
+</p>
+<p>
+<span class="plantPart">&#127969;</span>
+    ${ images.habit.map( habit => `<span><img src="${habit.image_url.replace('/o/', '/s/')}" /></span>` ).join('') }
+</p>
+
+    </div>`;
+      return tpl;
+      
+    };
+    
+   
+   GeoPickr.tpl.getPlantList = async (filters) => {
+       if (!filters) filters = GeoPickr.API.filters;
+       GeoPickr.API.search(filters.query).then(plants => {
+           var domPlantList = document.getElementById('plantList');
+           var result = '';
+           plants.forEach(plant => {
+               result += GeoPickr.tpl.miniPlant(plant);
+           })
+           domPlantList.innerHTML = result;
+           GeoPickr.API.updateResults(plants.length);
+           GeoPickr.events.bindAll();
+       });
+   }
+   document.getElementById('plantFilter').addEventListener('input', event => {
+       GeoPickr.API.filters.query = event.target.value;
+       GeoPickr.tpl.getPlantList();
+   })
+   
+
+   window.onload = (event) => {
+  console.log("page is fully loaded");
+     
+     document.getElementById('plantFilter').addEventListener('input', event => {
+       GeoPickr.API.filters.query = event.target.value;
+       GeoPickr.tpl.getPlantList();
+   })
+    console.log('document.getElementById(displayDialog)', document.getElementById('displayDialog').addEventListener ); document.getElementById('displayDialog').addEventListener('click', event => {
+       document.getElementById('fotos').showModal();
+   })
+     
+     
+};
+   GeoPickr.tpl.plantImages = (images)=>{
+      
+      if( Object.keys(images).length !== 0 ){
+        console.log( 'images', images )
+      }else{
+        console.log( ' no images', images )
+        return '';
+      }
+      
+      var tpl = `<div class="thumbsWrapper">
+<p>
+  <span class="plantPart">&#127800;</span>
+    ${ images.flower.map( flower => `<span><img src="${flower.image_url.replace('/o/', '/s/')}" /></span>` ).join('') }
+</p>
+<p>
+  <span class="plantPart">&#127808;</span>
+  ${ images.leaf.map( leaf => `<span><img src="${leaf.image_url.replace('/o/', '/s/')}" /></span>` ).join('') }
+</p>
+<p>
+<span class="plantPart">&#127822;</span>
+    ${ images.fruit.map( fruit => `<span><img src="${fruit.image_url.replace('/o/', '/s/')}" /></span>` ).join('') }
+</p>
+<p>
+ <span class="plantPart">&#127807;</span>
+    ${ images.bark.map( bark => `<span><img src="${bark.image_url.replace('/o/', '/s/')}" /></span>` ).join('') }
+</p>
+<p>
+<span class="plantPart">&#127969;</span>
+    ${ images.habit.map( habit => `<span><img src="${habit.image_url.replace('/o/', '/s/')}" /></span>` ).join('') }
+</p>
+
+    </div>`;
+      return tpl;
+      
+    };
+    
+   
+  </script>
+<dialog id="fotos">
+  <button autofocus>Close</button>
+  <p>This modal dialog has a groovy backdrop!</p>
+</dialog>
+<button id="displayDialog">Show the dialog</button>
+
+</body>
+</html>
