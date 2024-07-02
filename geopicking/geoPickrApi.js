@@ -17,32 +17,31 @@ GeoPickr.API = {};
 GeoPickr.utils = {};
 //clean l'
 GeoPickr.utils.cleanNames = (names) => {
-    return names.map((name) => GeoPickr.utils.cleanName(name));
+	return names.map((name) => GeoPickr.utils.cleanName(name));
 };
 GeoPickr.utils.cleanName = (name) => {
-    name = name.replace(/’/gi, "'").replace(/l ' |l '|l' |L ' |L '|L' /gi, "l'").replace(/d ' |d '|d' |D ' |D '|D' /gi, "d'");
-    // removing l' from debut
-    if (name.toLowerCase().startsWith("l'")) {
-        name = name.substr("2");
-    }
-    if (name.toLowerCase().startsWith('\"')) {
-        name = name.substr("2");
-    }
-  
-    return name.trim();
+	name = name.replace(/’/gi, "'").replace(/l ' |l '|l' |L ' |L '|L' /gi, "l'").replace(/d ' |d '|d' |D ' |D '|D' /gi, "d'");
+	// removing l' from debut
+	if (name.toLowerCase().startsWith("l'")) {
+		name = name.substr("2");
+	}
+	if (name.toLowerCase().startsWith('\"')) {
+		name = name.substr("2");
+	}
+	return name.trim();
 };
 GeoPickr.utils.getUniqueNames = (names) => {
-    const cleanedNames = GeoPickr.utils.cleanNames(names);
-    const groups = Object.groupBy(cleanedNames, name => name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, ""))
-    return Object.keys(groups).map(group => groups[group][0]);
+	const cleanedNames = GeoPickr.utils.cleanNames(names);
+	const groups = Object.groupBy(cleanedNames, name => name.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, ""))
+	return Object.keys(groups).map(group => groups[group][0]);
 };
 GeoPickr.utils.normalizeString = (string) => {
-    return string.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+	return string.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
 };
 GeoPickr.API.filters = {
-    query: '',
-    family: '',
-    genus: ''
+	query: '',
+	family: '',
+	genus: ''
 };
 GeoPickr.API.cachedPlantList = null;
 GeoPickr.API.cachedTreePlantList = null;
@@ -54,161 +53,161 @@ GeoPickr.API.proxy = "https://api-geopickr.vercel.app/?apiUrl=";
 GeoPickr.API.trefleAPI = "https://trefle.io/api/v1/";
 GeoPickr.API.trefleToken = "token=WY4938eNStvfSd3tTTUxQNQvoOVBhuaR4RPGbm61R8A";
 GeoPickr.API.getPlantList = async () => {
-    if (GeoPickr.API.cachedPlantList) return GeoPickr.API.cachedPlantList;
-    var response = await fetch(GeoPickr.API.plantListDataUrl);
-    var plantList = await response.json();
-    plantList = plantList.map(plant => {
-        var names = [plant.commonName, ...plant.inpiNames, ...plant.trefleNames];
-        plant.names = GeoPickr.utils.getUniqueNames(names);
-        plant.searchNames = plant.names.join(', ').toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
-        plant.names.shift();
-        plant.commonName = GeoPickr.utils.cleanName(plant.commonName);
-        plant.species = GeoPickr.utils.cleanName(plant.commonName);
-        var genusAndSpecies = plant.scientificName.split(' ');
-        genusAndSpecies.shift();
-        plant.species = genusAndSpecies.join(' ').trim();
-      
-        delete plant.inpiNames;
-        delete plant.trefleNames;
-        return plant;
-    })
-    GeoPickr.API.cachedPlantList = plantList;
-    return plantList;
+	if (GeoPickr.API.cachedPlantList) return GeoPickr.API.cachedPlantList;
+	var response = await fetch(GeoPickr.API.plantListDataUrl);
+	var plantList = await response.json();
+	plantList = plantList.map(plant => {
+		var names = [plant.commonName, ...plant.inpiNames, ...plant.trefleNames];
+		plant.names = GeoPickr.utils.getUniqueNames(names);
+		plant.searchNames = plant.names.join(', ').toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+		plant.names.shift();
+		plant.commonName = GeoPickr.utils.cleanName(plant.commonName);
+		plant.species = GeoPickr.utils.cleanName(plant.commonName);
+		var genusAndSpecies = plant.scientificName.split(' ');
+		genusAndSpecies.shift();
+		plant.species = genusAndSpecies.join(' ').trim();
+		delete plant.inpiNames;
+		delete plant.trefleNames;
+		return plant;
+	})
+	GeoPickr.API.cachedPlantList = plantList;
+	return plantList;
 };
 GeoPickr.API.getTreePlantList = async () => {
-    var response = await fetch(GeoPickr.API.treePlantListDataUrl);
-    if (GeoPickr.API.cachedTreePlantList) return GeoPickr.API.cachedTreePlantList;
-    var response = await fetch(GeoPickr.API.treePlantListDataUrl);
-    var plantList = await response.json();
-    GeoPickr.API.cachedTreePlantList = plantList;
-    return plantList;
+	var response = await fetch(GeoPickr.API.treePlantListDataUrl);
+	if (GeoPickr.API.cachedTreePlantList) return GeoPickr.API.cachedTreePlantList;
+	var response = await fetch(GeoPickr.API.treePlantListDataUrl);
+	var plantList = await response.json();
+	GeoPickr.API.cachedTreePlantList = plantList;
+	return plantList;
 };
 GeoPickr.API.getPlantFromInpn = async (scientificName) => {
-    var response = await fetch(GeoPickr.API.plantSearchInpnUrl + scientificName.split(" ").join("%20"));
-    var result = await response.json();
-    return result._embedded ? result._embedded.taxa[0] : {};
+	var response = await fetch(GeoPickr.API.plantSearchInpnUrl + scientificName.split(" ").join("%20"));
+	var result = await response.json();
+	return result._embedded ? result._embedded.taxa[0] : {};
 };
 GeoPickr.API.getWebPageFromInpn = async (scientificName) => {
-    var response = await fetch(GeoPickr.API.plantSearchInpnUrl + scientificName.split(" ").join("%20"));
-    var result = await response.json();
-    return result._embedded ? result._embedded.taxa[0]._links.inpnWebpage.href : {};
+	var response = await fetch(GeoPickr.API.plantSearchInpnUrl + scientificName.split(" ").join("%20"));
+	var result = await response.json();
+	return result._embedded ? result._embedded.taxa[0]._links.inpnWebpage.href : {};
 };
 GeoPickr.API.getPlantFromTrefle = async (scientificName) => {
-    var species = scientificName.toLowerCase().split(" ").join("-");
-    var response = await fetch(GeoPickr.API.proxy + GeoPickr.API.trefleAPI + "plants" + "/" + species + "/?" + GeoPickr.API.trefleToken);
-    return await response.json();
+	var species = scientificName.toLowerCase().split(" ").join("-");
+	var response = await fetch(GeoPickr.API.proxy + GeoPickr.API.trefleAPI + "plants" + "/" + species + "/?" + GeoPickr.API.trefleToken);
+	return await response.json();
 };
 GeoPickr.API.getMediaFromTreflePlant = (plant) => {
-    return plant.data.main_species.images;
+	return plant.data.main_species.images;
 };
 GeoPickr.API.getSourcesFromTreflePlant = (plant) => {
-    return plant.data.main_species.sources;
+	return plant.data.main_species.sources;
 };
 GeoPickr.API.getPlantExtraDatas = async (scientificName) => {
-    var response = await fetch(GeoPickr.API.extraDatasUrl + "/" + scientificName.split(" ").join("-"));
-    return response.ok ? await response.json() : {};
+	var response = await fetch(GeoPickr.API.extraDatasUrl + "/" + scientificName.split(" ").join("-"));
+	return response.ok ? await response.json() : {};
 };
 GeoPickr.API.search = async (query) => {
-    GeoPickr.API.filters.query = query;
-    var normalizeQuery = GeoPickr.utils.normalizeString(query);
-    var regExp = new RegExp(normalizeQuery, 'gi')
-    var plantList = await GeoPickr.API.getPlantList();
-    var results = [];
-    // filterByFamily
-    if (GeoPickr.API.filters.family) results = plantList.filter(plant => GeoPickr.API.filters.family.toLowerCase() === plant.family.toLowerCase());
-    // filterByGenus
-    if (GeoPickr.API.filters.genus) results = plantList.filter(plant => GeoPickr.API.filters.genus.toLowerCase() === plant.genus.toLowerCase());
-    if (!results.length) results = plantList;
-    results = results.filter(plant => {
-        var matches = plant.searchNames.match(regExp);
-        if (matches === null) {
-            return false
-        }
-        plant.matches = matches.length;
-        return matches.length !== 0;
-    });
-    results = results.sort((a, b) => {
-        return b.commonName.localeCompare(a.commonName, 'fr', {
-            sensitivity: 'base'
-        });
-    });
-    results = results.sort(
-        (a, b) => {
-            var indexOf = GeoPickr.utils.normalizeString(a.commonName).indexOf(normalizeQuery);
-            if (indexOf === -1) {
-                return 30;
-            }
-            if (indexOf === 0) {
-                return -5;
-            }
-            return 0;
-        });
-    return results;
+	GeoPickr.API.filters.query = query;
+	var normalizeQuery = GeoPickr.utils.normalizeString(query);
+	var regExp = new RegExp(normalizeQuery, 'gi')
+	var plantList = await GeoPickr.API.getPlantList();
+	var results = [];
+	// filterByFamily
+	if (GeoPickr.API.filters.family) results = plantList.filter(plant => GeoPickr.API.filters.family.toLowerCase() === plant.family.toLowerCase());
+	// filterByGenus
+	if (GeoPickr.API.filters.genus) results = plantList.filter(plant => GeoPickr.API.filters.genus.toLowerCase() === plant.genus.toLowerCase());
+	if (!results.length) results = plantList;
+	results = results.filter(plant => {
+		var matches = plant.searchNames.match(regExp);
+		if (matches === null) {
+			return false
+		}
+		plant.matches = matches.length;
+		return matches.length !== 0;
+	});
+	results = results.sort((a, b) => b.commonName.localeCompare(a.commonName, 'fr', {
+		sensitivity: 'base'
+	}));
+	results = results.sort(
+		(a, b) => {
+			var indexOf = GeoPickr.utils.normalizeString(a.commonName).indexOf(normalizeQuery);
+			if (indexOf === -1) {
+				return 30;
+			}
+			if (indexOf === 0) {
+				return -5;
+			}
+			return 0;
+		});
+	return results;
 };
-
-
-
-    GeoPickr.collection = {};
-    GeoPickr.collection.ids = [];
-    GeoPickr.collection.add = (id) => {
-        var filter = GeoPickr.collection.ids.filter(plant => {
-            return plant.id === id;
-        });
-        if (filter.length === 0) {
-            GeoPickr.collection.ids.push({
-                id: id
-            });
-        }
-        return true;
-    };
-    GeoPickr.collection.remove = (id) => {
-        var index = null;
-        var filter = GeoPickr.collection.ids.filter((plant, i) => {
-            if (plant.id === id) {
-                index = i;
-            }
-            return plant.id === id;
-        });
-        if (filter.length !== 0 && index !== null) {
-            GeoPickr.collection.ids.splice(index, 1);
-            return true;
-        }
-        return false;
-    };
-    GeoPickr.collection.getAll = () => {
-        return GeoPickr.collection.ids;
-    };
-    GeoPickr.collection.getById = (id) => {
-        var plant = GeoPickr.collection.ids.filter(plant => plant.id === id);
-        return plant.length ? plant[0] : [];
-    };
-    GeoPickr.collection.addPosition = (id, position) => {
-        var newPlant = GeoPickr.collection.getById(id);
-        if (!newPlant.length) {
-            GeoPickr.collection.add(id);
-        }
-        GeoPickr.collection.ids.forEach((plant, index, ids) => {
-            if (plant.id === id) {
-                if (ids[index].positions) {
-                    ids[index].positions.push(position)
-                } else {
-                    ids[index].positions = [position];
-                }
-            }
-        })
-        return true;
-    }
-    GeoPickr.collection.removePosition = (id, positionToDelete) => {
-        var index = null;
-        var isDeleted = false;
-        var plant = GeoPickr.collection.getById(id);
-        if (plant.positions) {
-            plant.positions.forEach((position, i, positions) => {
-                if (JSON.stringify(position) === JSON.stringify(positionToDelete)) {
-                    positions.splice(i, 1);
-                    isDeleted = true;
-                };
-            });
-            return isDeleted;
-        }
-    }
+GeoPickr.API.updateResults = (length) => {
+	GeoPickr.API.DOM.results.innerHTML = length;
+};
+GeoPickr.API.update = () => {
+	GeoPickr.API.DOM.familyFilter.innerHTML = GeoPickr.API.filters.family || '';
+	GeoPickr.API.DOM.genusFilter.innerHTML = GeoPickr.API.filters.genus || '';
+	GeoPickr.tpl.getPlantList();
+};
+GeoPickr.collection = {};
+GeoPickr.collection.ids = [];
+GeoPickr.collection.add = (id) => {
+	var filter = GeoPickr.collection.ids.filter(plant => plant.id === id);
+	if (filter.length === 0) {
+		GeoPickr.collection.ids.push({
+			id: id
+		});
+	}
+	return true;
+};
+GeoPickr.collection.remove = (id) => {
+	var index = null;
+	var filter = GeoPickr.collection.ids.filter((plant, i) => {
+		if (plant.id === id) {
+			index = i;
+		}
+		return plant.id === id;
+	});
+	if (filter.length !== 0 && index !== null) {
+		GeoPickr.collection.ids.splice(index, 1);
+		return true;
+	}
+	return false;
+};
+GeoPickr.collection.getAll = () => {
+	return GeoPickr.collection.ids;
+};
+GeoPickr.collection.getById = (id) => {
+	var plant = GeoPickr.collection.ids.filter(plant => plant.id === id);
+	return plant.length ? plant[0] : [];
+};
+GeoPickr.collection.addPosition = (id, position) => {
+	var newPlant = GeoPickr.collection.getById(id);
+	if (!newPlant.length) {
+		GeoPickr.collection.add(id);
+	}
+	GeoPickr.collection.ids.forEach((plant, index, ids) => {
+		if (plant.id === id) {
+			if (ids[index].positions) {
+				ids[index].positions.push(position)
+			} else {
+				ids[index].positions = [position];
+			}
+		}
+	})
+	return true;
+}
+GeoPickr.collection.removePosition = (id, positionToDelete) => {
+	var index = null;
+	var isDeleted = false;
+	var plant = GeoPickr.collection.getById(id);
+	if (plant.positions) {
+		plant.positions.forEach((position, i, positions) => {
+			if (JSON.stringify(position) === JSON.stringify(positionToDelete)) {
+				positions.splice(i, 1);
+				isDeleted = true;
+			};
+		});
+		return isDeleted;
+	}
+}
