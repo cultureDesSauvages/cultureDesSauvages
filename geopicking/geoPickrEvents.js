@@ -1,4 +1,5 @@
  GeoPickr.events = {};
+
  GeoPickr.events.more = () => {
  	var moreInfosLinks = document.querySelectorAll('.moreInfoLink');
  	moreInfosLinks.forEach(link => {
@@ -10,6 +11,7 @@
  				div.innerHTML = GeoPickr.tpl.plantImages(images);
      event.target.classList.toggle('hide');
  				event.target.after(div);
+     GeoPickr.events.showFoto();
  			});
  			GeoPickr.API.getPlantExtraDatas(scName).then(json => {
  				console.log(json)
@@ -19,6 +21,14 @@
  		});
  	});
  };
+GeoPickr.events.showFoto = () =>  {
+ var fotos = document.querySelectorAll('.thumbsWrapper img');
+ fotos.forEach( foto => {
+  foto.addEventListener('click', event => {
+   event.target.closest( '.imgWrapper img' ).src = event.target.src;
+  })
+ })
+};
  GeoPickr.events.addToCollection = () => {
  	document.querySelectorAll('.addToCollection').forEach(link => {
  		link.addEventListener('click', event => {
@@ -56,4 +66,5 @@
  	GeoPickr.events.addToCollection();
  	GeoPickr.events.filterByFamily();
  	GeoPickr.events.filterByGenus();
+  
  };
