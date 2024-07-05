@@ -8,6 +8,7 @@
  				var images = plant.data.main_species.images;
  				var div = document.createElement('div');
  				div.innerHTML = GeoPickr.tpl.plantImages(images);
+     event.target.classList.toggle('hide');
  				event.target.after(div);
  			});
  			GeoPickr.API.getPlantExtraDatas(scName).then(json => {
